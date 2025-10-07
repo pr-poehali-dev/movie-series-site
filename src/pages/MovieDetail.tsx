@@ -152,6 +152,10 @@ const MovieDetail = () => {
                   <Icon name="Play" size={20} className="mr-2" />
                   Смотреть
                 </Button>
+                <Button variant="secondary" className="w-full" size="lg">
+                  <Icon name="Download" size={20} className="mr-2" />
+                  Скачать
+                </Button>
                 <div className="grid grid-cols-2 gap-2">
                   <Button variant="outline" size="sm">
                     <Icon name="Plus" size={16} className="mr-2" />

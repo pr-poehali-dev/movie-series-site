@@ -179,6 +179,10 @@ const Watch = () => {
               </div>
 
               <div className="flex gap-2">
+                <Button variant="secondary" size="sm">
+                  <Icon name="Download" size={16} className="mr-2" />
+                  Скачать
+                </Button>
                 <Button variant="outline" size="sm">
                   <Icon name="Plus" size={16} className="mr-2" />
                   В список
