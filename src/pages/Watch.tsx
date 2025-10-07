@@ -1,13 +1,18 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import Icon from '@/components/ui/icon';
 import VideoPlayer from '@/components/VideoPlayer';
 
 const Watch = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [selectedSeason, setSelectedSeason] = useState(1);
+  const [selectedEpisode, setSelectedEpisode] = useState(1);
 
   const allContent = [
     {
@@ -59,7 +64,8 @@ const Watch = () => {
       seasons: 5,
       description: 'Учитель химии начинает производить метамфетамин.',
       image: 'https://v3b.fal.media/files/b/monkey/Hs4xN1gVcI6oOtA2BaUED_output.png',
-      type: 'series'
+      type: 'series',
+      episodesPerSeason: [7, 13, 13, 13, 16]
     },
     {
       id: '6',
@@ -70,7 +76,8 @@ const Watch = () => {
       seasons: 8,
       description: 'Эпическая сага о борьбе за власть между знатными семьями.',
       image: 'https://v3b.fal.media/files/b/monkey/Hs4xN1gVcI6oOtA2BaUED_output.png',
-      type: 'series'
+      type: 'series',
+      episodesPerSeason: [10, 10, 10, 10, 10, 10, 7, 6]
     },
     {
       id: '7',
@@ -81,7 +88,8 @@ const Watch = () => {
       seasons: 10,
       description: 'Повседневная жизнь шести друзей, живущих в Нью-Йорке.',
       image: 'https://v3b.fal.media/files/b/monkey/Hs4xN1gVcI6oOtA2BaUED_output.png',
-      type: 'series'
+      type: 'series',
+      episodesPerSeason: [24, 24, 25, 24, 24, 25, 24, 24, 24, 18]
     }
   ];
 
@@ -105,6 +113,20 @@ const Watch = () => {
     .filter(item => item.id !== id && item.genre.some(g => content.genre.includes(g)))
     .slice(0, 4);
 
+  const isSeries = content.type === 'series' && 'episodesPerSeason' in content;
+  
+  const generateEpisodes = (seasonNum: number, episodeCount: number) => {
+    return Array.from({ length: episodeCount }, (_, i) => ({
+      number: i + 1,
+      title: `Эпизод ${i + 1}`,
+      duration: '45 мин'
+    }));
+  };
+
+  const currentEpisodeTitle = isSeries 
+    ? `Сезон ${selectedSeason}, Эпизод ${selectedEpisode}` 
+    : content.title;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
@@ -125,7 +147,7 @@ const Watch = () => {
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
         <div className="max-w-6xl mx-auto space-y-8">
-          <VideoPlayer title={content.title} />
+          <VideoPlayer title={currentEpisodeTitle} />
 
           <div className="space-y-4">
             <div className="flex items-start justify-between gap-4">
@@ -173,6 +195,63 @@ const Watch = () => {
                 {content.description}
               </p>
             </Card>
+
+            {isSeries && content.episodesPerSeason && (
+              <Card className="p-6">
+                <h2 className="text-xl font-bold mb-4">Эпизоды</h2>
+                <Tabs value={selectedSeason.toString()} onValueChange={(v) => setSelectedSeason(Number(v))}>
+                  <TabsList className="mb-4">
+                    {Array.from({ length: content.seasons }, (_, i) => (
+                      <TabsTrigger key={i + 1} value={(i + 1).toString()}>
+                        Сезон {i + 1}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  
+                  {Array.from({ length: content.seasons }, (_, seasonIndex) => {
+                    const seasonNum = seasonIndex + 1;
+                    const episodeCount = content.episodesPerSeason[seasonIndex];
+                    const episodes = generateEpisodes(seasonNum, episodeCount);
+                    
+                    return (
+                      <TabsContent key={seasonNum} value={seasonNum.toString()}>
+                        <ScrollArea className="h-[400px] pr-4">
+                          <div className="space-y-2">
+                            {episodes.map((episode) => (
+                              <div
+                                key={episode.number}
+                                onClick={() => {
+                                  setSelectedSeason(seasonNum);
+                                  setSelectedEpisode(episode.number);
+                                }}
+                                className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-colors ${
+                                  selectedSeason === seasonNum && selectedEpisode === episode.number
+                                    ? 'bg-primary/20 border-2 border-primary'
+                                    : 'bg-muted hover:bg-muted/80'
+                                }`}
+                              >
+                                <div className="flex-shrink-0 w-16 h-16 bg-card rounded flex items-center justify-center">
+                                  <Icon 
+                                    name={selectedSeason === seasonNum && selectedEpisode === episode.number ? 'Play' : 'Circle'} 
+                                    size={24} 
+                                    className="text-primary"
+                                  />
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-bold">{episode.title}</h4>
+                                  <p className="text-sm text-muted-foreground">{episode.duration}</p>
+                                </div>
+                                <Badge variant="outline">{episode.number}</Badge>
+                              </div>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      </TabsContent>
+                    );
+                  })}
+                </Tabs>
+              </Card>
+            )}
           </div>
 
           {relatedContent.length > 0 && (
