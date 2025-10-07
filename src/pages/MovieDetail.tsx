@@ -148,7 +148,7 @@ const MovieDetail = () => {
                 <img src={content.image} alt={content.title} className="w-full h-full object-cover" />
               </div>
               <div className="p-4 space-y-3">
-                <Button className="w-full" size="lg">
+                <Button className="w-full" size="lg" onClick={() => navigate(`/watch/${id}`)}>
                   <Icon name="Play" size={20} className="mr-2" />
                   Смотреть
                 </Button>
