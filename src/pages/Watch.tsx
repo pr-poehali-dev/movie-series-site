@@ -7,12 +7,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Icon from '@/components/ui/icon';
 import VideoPlayer from '@/components/VideoPlayer';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const Watch = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
+
+  const qualities = [
+    { label: '4K Ultra HD', size: '8.5 GB', format: '2160p' },
+    { label: 'Full HD', size: '4.2 GB', format: '1080p' },
+    { label: 'HD', size: '2.1 GB', format: '720p' },
+    { label: 'SD', size: '850 MB', format: '480p' },
+  ];
 
   const allContent = [
     {
@@ -179,7 +194,11 @@ const Watch = () => {
               </div>
 
               <div className="flex gap-2">
-                <Button variant="secondary" size="sm">
+                <Button 
+                  variant="secondary" 
+                  size="sm"
+                  onClick={() => setDownloadDialogOpen(true)}
+                >
                   <Icon name="Download" size={16} className="mr-2" />
                   Скачать
                 </Button>
@@ -289,6 +308,39 @@ const Watch = () => {
           )}
         </div>
       </main>
+
+      <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Выберите качество</DialogTitle>
+            <DialogDescription>
+              Скачивание: {content?.title}
+              {content?.type === 'series' && ` — S${selectedSeason}E${selectedEpisode}`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 mt-4">
+            {qualities.map((quality) => (
+              <Button
+                key={quality.format}
+                variant="outline"
+                className="w-full justify-between h-auto py-4"
+                onClick={() => {
+                  setDownloadDialogOpen(false);
+                }}
+              >
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold">{quality.label}</span>
+                  <span className="text-sm text-muted-foreground">{quality.format}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">{quality.size}</span>
+                  <Icon name="Download" size={18} />
+                </div>
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -1,12 +1,28 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const MovieDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
+
+  const qualities = [
+    { label: '4K Ultra HD', size: '8.5 GB', format: '2160p' },
+    { label: 'Full HD', size: '4.2 GB', format: '1080p' },
+    { label: 'HD', size: '2.1 GB', format: '720p' },
+    { label: 'SD', size: '850 MB', format: '480p' },
+  ];
 
   const allContent = [
     {
@@ -152,7 +168,12 @@ const MovieDetail = () => {
                   <Icon name="Play" size={20} className="mr-2" />
                   Смотреть
                 </Button>
-                <Button variant="secondary" className="w-full" size="lg">
+                <Button 
+                  variant="secondary" 
+                  className="w-full" 
+                  size="lg"
+                  onClick={() => setDownloadDialogOpen(true)}
+                >
                   <Icon name="Download" size={20} className="mr-2" />
                   Скачать
                 </Button>
@@ -263,6 +284,38 @@ const MovieDetail = () => {
           </section>
         )}
       </main>
+
+      <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Выберите качество</DialogTitle>
+            <DialogDescription>
+              Скачивание: {content?.title}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 mt-4">
+            {qualities.map((quality) => (
+              <Button
+                key={quality.format}
+                variant="outline"
+                className="w-full justify-between h-auto py-4"
+                onClick={() => {
+                  setDownloadDialogOpen(false);
+                }}
+              >
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold">{quality.label}</span>
+                  <span className="text-sm text-muted-foreground">{quality.format}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">{quality.size}</span>
+                  <Icon name="Download" size={18} />
+                </div>
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
