@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -6,12 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('home');
   const [searchQuery, setSearchQuery] = useState('');
 
   const movies = [
     {
-      id: 1,
+      id: '1',
       title: 'Крёстный отец',
       year: 1972,
       rating: 4.8,
@@ -35,7 +37,7 @@ const Index = () => {
       image: 'https://v3b.fal.media/files/b/monkey/Hs4xN1gVcI6oOtA2BaUED_output.png'
     },
     {
-      id: 4,
+      id: '4',
       title: 'Форрест Гамп',
       year: 1994,
       rating: 4.6,
@@ -46,7 +48,7 @@ const Index = () => {
 
   const series = [
     {
-      id: 1,
+      id: '5',
       title: 'Во все тяжкие',
       year: 2008,
       rating: 4.9,
@@ -55,7 +57,7 @@ const Index = () => {
       image: 'https://v3b.fal.media/files/b/monkey/Hs4xN1gVcI6oOtA2BaUED_output.png'
     },
     {
-      id: 2,
+      id: '6',
       title: 'Игра престолов',
       year: 2011,
       rating: 4.5,
@@ -64,7 +66,7 @@ const Index = () => {
       image: 'https://v3b.fal.media/files/b/monkey/Hs4xN1gVcI6oOtA2BaUED_output.png'
     },
     {
-      id: 3,
+      id: '7',
       title: 'Друзья',
       year: 1994,
       rating: 4.7,
@@ -154,7 +156,7 @@ const Index = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {movies.map((movie) => (
-                  <Card key={movie.id} className="overflow-hidden group cursor-pointer hover:scale-105 transition-transform animate-scale-in">
+                  <Card key={movie.id} className="overflow-hidden group cursor-pointer hover:scale-105 transition-transform animate-scale-in" onClick={() => navigate(`/content/${movie.id}`)}>
                     <div className="relative aspect-[2/3] bg-card">
                       <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
@@ -194,7 +196,7 @@ const Index = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {series.map((show) => (
-                  <Card key={show.id} className="overflow-hidden group cursor-pointer hover:scale-105 transition-transform">
+                  <Card key={show.id} className="overflow-hidden group cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate(`/content/${show.id}`)}>
                     <div className="relative aspect-video bg-card">
                       <img src={show.image} alt={show.title} className="w-full h-full object-cover" />
                       <div className="absolute top-2 right-2">
@@ -233,7 +235,7 @@ const Index = () => {
             <h2 className="text-3xl font-bold">Фильмы</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {movies.map((movie) => (
-                <Card key={movie.id} className="overflow-hidden group cursor-pointer hover:scale-105 transition-transform">
+                <Card key={movie.id} className="overflow-hidden group cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate(`/content/${movie.id}`)}>
                   <div className="relative aspect-[2/3] bg-card">
                     <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
                   </div>
@@ -266,7 +268,7 @@ const Index = () => {
             <h2 className="text-3xl font-bold">Сериалы</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {series.map((show) => (
-                <Card key={show.id} className="overflow-hidden group cursor-pointer hover:scale-105 transition-transform">
+                <Card key={show.id} className="overflow-hidden group cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate(`/content/${show.id}`)}>
                   <div className="relative aspect-video bg-card">
                     <img src={show.image} alt={show.title} className="w-full h-full object-cover" />
                     <div className="absolute top-2 right-2">
